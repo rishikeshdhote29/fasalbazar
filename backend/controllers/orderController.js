@@ -23,35 +23,39 @@ exports.createOrder= asyncHandler(async(req,res)=>{
 	cart.products.map((p)=>{
 		totalPrice+=p.quantity*p.product.price;
 	})
-	console.log(totalPrice);
+
 	 //payment integration will be here
 const 	 isPaymentSuccessFull= true;
 	let orderArr =[];
 
 if(isPaymentSuccessFull){
-	await  cart.products.map  (async(p)=>{	
+	for (const p of cart.products) {
 		const seller= await Seller.findById(p.product.seller);
+
 	const newOrder= new Order({
 	orderId:generateOrderId(),
 		status:"pending",
-		buyer:user._id,
+
+		buyer:user?._id,
 		seller:seller._id,
 		orderDate:Date.now(),
 		amount:p.quantity*p.product.price,
-		trakingId:generateTrackingId(),
+		quantity:p.quantity,
+		trackingId:generateTrackingId(),
 		paymentMethod:paymentMethod,
-		address:address,
+		address:user.address,
+		pincode:user.pincode,
 		product:p.product._id
 		
 	})
 	// newOrderDetails= await newOrder.save();
 	const orderDetails= await newOrder.save();
 	seller.orders.push(orderDetails._id)
-user.order.push(orderDetails._id);
+user.orders.push(orderDetails._id);
 
 orderArr.push( orderDetails);
 await seller.save();
-})
+}
 cart.products=[];
  await cart.save();
 await user.save();
@@ -94,7 +98,7 @@ res.status(200).json({
 
 exports.getOrderDetailsByTrackingId=asyncHandler(async(req,res)=>{
 const orderId= req.params.trackingId;
-const order=await  Order.find({trakingId:orderId});
+const order=await  Order.find({trackingId:orderId});
 if(!order){
 	throw new Error("order details not found");
 
@@ -106,3 +110,59 @@ res.status(200).json({
 })
 
 })
+// getOrderAllOrders
+// route /api/order/get-all-orders
+// access private
+
+exports.getAllOrders=asyncHandler(async(req,res)=>{
+const orderId= req.params.trackingId;
+const userId=req.userId;
+
+	const user = await User.findById(userId).populate({
+		path: "orders",
+		model: "Order",
+		options: { sort: { createdAt: -1 } },
+		populate: {
+			path: "product",
+			model: "Product"
+		}
+	});
+if(!user) {
+	throw new Error("order list not found");
+
+}
+res.status(200).json({
+	status:"success",
+	message:"order details list  fetched successffuly",
+	orders  :user.orders
+
+
+})})
+// farmer getOrderAllOrders
+// route /api/order/get-all-seller-order
+// access private
+
+exports.getAllSellerOrders=asyncHandler(async(req,res)=>{
+	const orderId= req.params.trackingId;
+	const userId=req.userId;
+
+	const user = await Seller.findById(userId).populate({
+		path: "orders",
+		model: "Order",
+		options: { sort: { createdAt: -1 } },
+		populate: {
+			path: "product",
+			model: "Product"
+		}
+	});
+	if(!user) {
+		throw new Error("order list not found");
+
+	}
+	res.status(200).json({
+		status:"success",
+		message:"order details list  fetched successffuly",
+		orders  :user.orders
+
+
+	})})

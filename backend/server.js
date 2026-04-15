@@ -1,5 +1,6 @@
 const express=require("express");
 const app= express();
+const cloudinary = require('cloudinary').v2;
 const env=require("dotenv");
 env.config();
 const userRoutes= require("./routes/userRoutes");
@@ -18,6 +19,9 @@ app.use(cors({
 }));
 
 
+cloudinary.config({
+    secure: true
+});
 app.use(express.json());
 //user router
 app.use("/api/auth",userRoutes);

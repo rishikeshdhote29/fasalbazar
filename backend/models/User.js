@@ -34,10 +34,11 @@ const sellerSchema = new mongoose.Schema({
 							default:null
 		}
 	
-	,order:[
+	,orders:[
 		{
 			  type:mongoose.Schema.Types.ObjectId,
-							ref:"Order"
+							ref:"Order",
+			default:null
 		}
 	]
 	

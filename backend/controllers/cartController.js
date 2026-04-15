@@ -56,7 +56,7 @@ exports.addToCart = asyncHandler(async (req, res) => {
   const productId = req.params.id;
   const buyerId = req.userId;
   const quantity = req.body.quantity;
-
+console.log("add to cart called controller")
   // Ensure buyer exists
   let buyer = await User.findById(buyerId);
 
@@ -78,7 +78,6 @@ exports.addToCart = asyncHandler(async (req, res) => {
 
   // Now safely fetch the cart
   const cart = await Cart.findById(buyer.cart);
-  console.log("buyer", buyer)
   if (!cart) {
     return res.status(404).json({ status: "fail", message: "Cart not found" });
   }

@@ -84,7 +84,7 @@ if(!user){
 
 	res.status(200).json({
 		status:"success",
-		message:"user profile fetched successfuly",
+		message:"user profile fetched successfully",
 		user
 		
 		
@@ -99,13 +99,15 @@ exports.updateProfile=asyncHandler(async(req,res)=>{
 const updateUser= req.body;
 	const id =  req.userId;
   const user = await User.findOne({_id:id});
-  
+   console.log(updateUser);
   if(!user){
 	console.log(user)
 	throw new Error("user not found");
 
   }
-
+  if (req.file && req.file.path) {
+	updateUser.avatar = req.file.path;
+  }
   const newUser= await User.findByIdAndUpdate(id,updateUser	,{returnDocument:"after"});
   res.status(200).json({
 	status:"success",

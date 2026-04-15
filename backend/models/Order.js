@@ -20,15 +20,17 @@ const orderSchema= new mongoose.Schema({
     orderDate:{
         type:Date,
         default:Date.now()
+    },quantity:{
+        type:Number,
     },
-    trakingId:{
+    trackingId:{
         type:String,
         
     },amount:{
         type:Number,
         required:true,
     },
-    products:{
+    product:{
          type:mongoose.Schema.Types.ObjectId,
          ref:"Products"
     },

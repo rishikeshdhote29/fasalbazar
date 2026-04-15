@@ -57,10 +57,14 @@ exports.loginSeller=asyncHandler(async(req,res)=>{
 	res.status(200).json({
 		status:"success",
 		message:"Seller logid in success fully",
-		seller:{
+		user:{
 			name:Seller.name,
 			token,
-			avatar:seller.avatar
+			avatar:seller.avatar,
+			email:seller.email,
+			address:seller.address,
+			pincode:seller.pincode,
+			avatar:seller.avatar,
 		}
 	})
 
