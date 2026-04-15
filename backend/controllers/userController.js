@@ -63,6 +63,7 @@ exports.loginUser=asyncHandler(async(req,res)=>{
 			address:user.address,
 			pincode:user.pincode,
 			avatar:user.avatar,
+			role:"user"
 	}
 	})
 
@@ -77,15 +78,18 @@ exports.userProfile=asyncHandler(async(req,res)=>{
 
 const id =req.userId;
 const user= await User.findOne({_id:id}).select("-password");
-if(!user){
+if(!user) {
 	throw new Error("user not found");
 	
-	}
+}
 
 	res.status(200).json({
 		status:"success",
 		message:"user profile fetched successfully",
-		user
+		user:{
+			...user._doc,
+			role:"user"
+		}
 		
 		
 	})

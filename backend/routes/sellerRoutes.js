@@ -8,6 +8,8 @@ Router.post("/register",register);
 Router.post("/login",loginSeller);
 Router.get("/profile",isLoggedin,sellerProfile)
 Router.put("/profile",isLoggedin,updateProfile)
+Router.get("/profile",isLoggedin,sellerProfile)
+
 
 
 

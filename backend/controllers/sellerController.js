@@ -65,6 +65,7 @@ exports.loginSeller=asyncHandler(async(req,res)=>{
 			address:seller.address,
 			pincode:seller.pincode,
 			avatar:seller.avatar,
+				role:"seller"
 		}
 	})
 
@@ -88,7 +89,10 @@ if(!Seller){
 	res.status(200).json({
 		status:"success",
 		message:"Seller profile fetched successfuly",
-		Seller
+		seller:{
+			...Seller,
+			role:"seller"
+		}
 		
 		
 	})
@@ -122,3 +126,29 @@ const updateSeller= req.body;
 
 
 })
+
+//
+// //  @user seller  profile
+// //  @route GET /api/seller/auth/profile
+// //  @access private
+//
+// exports.sellerProfile=asyncHandler(async(req,res)=>{
+//
+// const id =req.userId;
+// const user= await Seller.findOne({_id:id}).select("-password");
+// if(!user) {
+// 	throw new Error("user not found");
+//
+// }
+//
+// 	res.status(200).json({
+// 		status:"success",
+// 		message:"user profile fetched successfully",
+// 		user:{
+// 			...user._doc,
+// 			role:"seller"
+// 		}
+//
+//
+// 	})
+// })
