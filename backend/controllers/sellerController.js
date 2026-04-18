@@ -103,22 +103,26 @@ if(!Seller){
 //@access private
 
 exports.updateProfile=asyncHandler(async(req,res)=>{
-const updateSeller= req.body;
+
+const updateUser= req.body;
 	const id =  req.userId;
-  const Seller = await Seller.findOne({_id:id});
-  
-  if(!Seller){
-	console.log(Seller)
-	throw new Error("Seller not found");
+  const user = await Seller.findOne({_id:id});
+   console.log(updateUser);
+  if(!user){
+	console.log(user)
+	throw new Error("seller not found");
 
   }
-
-  const newSeller= await Seller.findByIdAndUpdate(id,updateSeller	,{returnDocument:"after"});
+  if (req.file && req.file.path) {
+	updateUser.avatar = req.file.path;
+  }
+  const newUser= await Seller.findByIdAndUpdate(id,updateUser	,{returnDocument:"after"});
   res.status(200).json({
 	status:"success",
-	message:"Seller profile updated",
-	newSeller
+	message:"seller  profile updated",
+	newUser
   })
+
 
 
 
