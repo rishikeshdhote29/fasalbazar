@@ -17,6 +17,10 @@ const sellerSchema = new mongoose.Schema({
 	address:{
 		type:String,
 		default:null,
+	},
+	mobileNo:{
+		type:String,
+		default:null,
 	}
 	,pincode:{
 

@@ -58,13 +58,12 @@ exports.loginSeller=asyncHandler(async(req,res)=>{
 		status:"success",
 		message:"Seller logid in success fully",
 		user:{
-			name:Seller.name,
+			name:seller.name,
 			token,
 			avatar:seller.avatar,
 			email:seller.email,
 			address:seller.address,
 			pincode:seller.pincode,
-			avatar:seller.avatar,
 				role:"seller"
 		}
 	})
@@ -80,8 +79,8 @@ exports.loginSeller=asyncHandler(async(req,res)=>{
 exports.sellerProfile=asyncHandler(async(req,res)=>{
 
 const id =req.userId;
-const Seller= await Seller.findOne({_id:id}).select("-password");
-if(!Seller){
+const seller= await Seller.findById(id).select("-password");
+if(!seller){
 	throw new Error("Seller not found");
 	
 	}
@@ -90,7 +89,7 @@ if(!Seller){
 		status:"success",
 		message:"Seller profile fetched successfuly",
 		seller:{
-			...Seller,
+			...seller.toObject(),
 			role:"seller"
 		}
 		
@@ -106,6 +105,7 @@ exports.updateProfile=asyncHandler(async(req,res)=>{
 
 const updateUser= req.body;
 	const id =  req.userId;
+	console.log(id)
   const user = await Seller.findOne({_id:id});
    console.log(updateUser);
   if(!user){
@@ -116,7 +116,7 @@ const updateUser= req.body;
   if (req.file && req.file.path) {
 	updateUser.avatar = req.file.path;
   }
-  const newUser= await Seller.findByIdAndUpdate(id,updateUser	,{returnDocument:"after"});
+	const newUser= await Seller.findByIdAndUpdate(id,updateUser,{ new: true, runValidators: true }).select("-password");
   res.status(200).json({
 	status:"success",
 	message:"seller  profile updated",

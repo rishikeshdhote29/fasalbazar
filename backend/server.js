@@ -1,8 +1,8 @@
 const express=require("express");
 const app= express();
 const cloudinary = require('cloudinary').v2;
-const env=require("dotenv");
-env.config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 const userRoutes= require("./routes/userRoutes");
 const productRoutes= require("./routes/productRoutes");
 const cartRoutes= require("./routes/cartRoutes");
@@ -12,10 +12,11 @@ const orderRoutes= require("./routes/orderRoutes");
 
 const connectDB= require("./database");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
-cors=require("cors");
+const cors = require("cors");
 app.use(cors({
     origin: "*",
-     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+     allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 
