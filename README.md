@@ -47,6 +47,60 @@ Frontend uses:
 
 - `VITE_BASE_URL` (default fallback: `http://localhost:3030/api`)
 
+## API Documentation
+
+Base URL (local): `http://localhost:3030/api`
+
+**Auth**
+- Protected routes require `Authorization: Bearer <token>`.
+- Buyer tokens come from `/api/auth/login`; seller tokens come from `/api/seller/auth/login`.
+
+**Uploads**
+- Profile and product image uploads use `multipart/form-data` with `image` field.
+
+### Health
+- `GET /api/health` — service health check.
+
+### Buyer Authentication & Profile
+- `POST /api/auth/register` — register buyer. Body: `{ name, email, password }`
+- `POST /api/auth/login` — login buyer. Body: `{ email, password }`
+- `GET /api/auth/profile` — get buyer profile (auth).
+- `PUT /api/auth/update-profile` — update buyer profile (auth, multipart). Body fields: `{ name, email, address, pincode, avatar? }`
+- `POST /api/auth/forget-password` — request reset token. Body: `{ email }`
+- `PUT /api/auth/reset-password/:token` — reset password. Body: `{ password }`
+
+### Seller Authentication & Profile
+- `POST /api/seller/auth/register` — register seller. Body: `{ name, email, password }`
+- `POST /api/seller/auth/login` — login seller. Body: `{ email, password }`
+- `GET /api/seller/auth/profile` — get seller profile (auth).
+- `PUT /api/seller/auth/update-seller-profile` — update seller profile (auth, multipart). Body fields: `{ name, email, address, pincode, avatar? }`
+- `POST /api/seller/auth/forget-password` — request reset token. Body: `{ email }`
+- `PUT /api/seller/auth/reset-password/:token` — reset password. Body: `{ password }`
+
+### Products
+- `POST /api/product/create` — create product (seller auth, multipart). Body fields: `{ name, price, description, quantity, unit, category, discount }`
+- `PUT /api/product/update/:id` — update product (seller auth, multipart). Body fields: same as create.
+- `DELETE /api/product/delete-product/:id` — soft delete product (seller auth).
+- `GET /api/product/getAllProducts` — list products. Query: `page`, `limit`, `sortBy` (`newest|oldest|price-asc|price-desc|name-asc|name-desc`)
+- `GET /api/product/search` — search products. Query: `q`
+- `GET /api/product/seller/listing` — seller’s own listings (seller auth).
+- `GET /api/product/:id` — product details.
+
+### Cart
+- `PUT /api/cart/add-to-cart/:id` — add/update product in cart (buyer auth). Body: `{ quantity }`
+- `PUT /api/cart/delete-form-cart/:id` — remove product from cart (buyer auth).
+- `GET /api/cart/get-cart` — fetch cart (buyer auth).
+
+### Orders
+- `POST /api/order/create-order` — place order (buyer auth). Body: `{ paymentMethod, address, pincode }`
+- `GET /api/order/get-details/:id` — buyer order details (buyer auth).
+- `GET /api/order/get-details-tackingId/:trackingId` — public order tracking.
+- `GET /api/order/get-orders-list` — buyer order list (buyer auth).
+- `PUT /api/order/cancel-order/:id` — cancel order (buyer auth).
+- `GET /api/order/get-seller-orders-list` — seller order list (seller auth).
+- `GET /api/order/get-seller-details/:id` — seller order details by orderId (seller auth).
+- `PUT /api/order/update-order-status/:id` — update status (seller auth). Body: `{ status }` where status is one of `order placed`, `processing`, `shipped`, `out for delivery`, `delivered`, `cancelled`.
+
 ## Environment Variables
 
 Create `backend/.env` and configure at least:
