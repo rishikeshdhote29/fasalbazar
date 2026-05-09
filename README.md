@@ -51,7 +51,7 @@ Frontend uses:
 
 Create `backend/.env` and configure at least:
 
-- `MONGO_URI` (optional; defaults to `mongodb://localhost:27017/fasalbazar`)
+- `MONGO_URI` (optional for local setup; defaults to `mongodb://localhost:27017/fasalbazar`. Set this explicitly when using a remote/managed MongoDB instance or production database.)
 - `JWT_SECRET`
 - `GMAIL_USER`
 - `APP_PASSWORD`
@@ -106,4 +106,4 @@ Open the Vite URL shown in terminal (typically `http://localhost:5173`).
 ## Notes
 
 - The frontend’s internal `frontend/README.md` is the default Vite template.
-- CORS is currently configured to allow all origins in backend.
+- CORS is currently configured to allow all origins in backend. Restrict allowed origins before deploying to production.
