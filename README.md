@@ -53,7 +53,8 @@ Create `backend/.env` and configure at least:
 
 - `MONGO_URI` (optional for local setup; defaults to
   `mongodb://localhost:27017/fasalbazar`. Set this explicitly when using a
-  remote/managed MongoDB instance or production database.)
+  remote/managed MongoDB instance. For production deployments, set `MONGO_URI`
+  explicitly.)
 - `JWT_SECRET`
 - `GMAIL_USER`
 - `APP_PASSWORD`
@@ -112,4 +113,6 @@ Open the Vite URL shown in terminal (typically `http://localhost:5173`).
 ## Security Note
 
 ⚠️ Backend CORS is currently configured to allow all origins (`*`). Restrict
-allowed origins before deploying to production.
+allowed origins before deploying to production by updating the `cors(...)`
+configuration in `backend/server.js` (set `origin` to your trusted frontend
+domains).
