@@ -2,7 +2,9 @@ const asyncHandler = require("express-async-handler");
 
 const bcrypt= require("bcrypt");
 const jwt=require("jsonwebtoken");
+const crypto = require('crypto');
 const Seller = require("../models/Seller");
+const sendEmail = require("../utils/passwordResetEmail");
 
 //@Seller register
 //@route POST /api/seller/auth/register
@@ -52,7 +54,7 @@ exports.loginSeller=asyncHandler(async(req,res)=>{
 	
 
 
-	const token=jwt.sign({id:seller._id},process.env.JWT_SECRET,{ expiresIn: '1h' })
+	const token=jwt.sign({id:seller._id},process.env.JWT_SECRET,{ expiresIn: '10d' })
 
 	res.status(200).json({
 		status:"success",
@@ -156,3 +158,59 @@ const updateUser= req.body;
 //
 // 	})
 // })
+
+//forget password password
+// route POST /api/auth/reset-password
+// access private
+
+exports.forgetPassword=asyncHandler(async(req,res)=>{
+  const {email}= req.body;
+  const sellerFound  = await Seller.findOne({email});
+  if(!sellerFound){
+	throw new Error("seller not found with this email");
+  }
+  const resetToken = await sellerFound.generatePasswordResetToken();
+  console.log("Generated reset token:", resetToken);
+  await sellerFound.save();
+  await sendEmail(email, resetToken);
+  res.json({
+	status: "success",
+	message: "password reset token sent to your email successfully"
+  })
+})
+//@desc password reset
+//@route PUT /api/v1/users/reset-password/:resetToken
+//@access public
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+	//Get the token form params
+
+	const resetToken = req.params.token;
+	// Get the password
+	const {password} = req.body;
+	//convert resetToken into hashed token
+	const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+	//verify the token with DB
+	const tokenUser = await Seller.findOne({
+		passwordResetToken: hashedToken,
+		passwordResetExprires: {$gt: Date.now()}
+	});
+	//if user is not found
+	
+	if (!tokenUser) {
+		const error = new Error("user not found or token is expired");
+		next(error);
+		return;
+	}
+	//UPDATE the new password
+	let salt = await bcrypt.genSalt(10);
+	let hash = await bcrypt.hash(password, salt);
+	tokenUser.password = hash;
+	tokenUser.passwordResetToken = undefined;
+	tokenUser.passwordResetExprires = undefined;
+	await tokenUser.save();
+	res.json({
+		status: "success",
+		message: "Password reset  successfully",
+	})
+	
+})

@@ -56,14 +56,33 @@ exports.addToCart = asyncHandler(async (req, res) => {
   const productId = req.params.id;
   const buyerId = req.userId;
   const quantity = req.body.quantity;
-console.log("add to cart called controller")
+  console.log("add to cart called controller");
+
   // Ensure buyer exists
   let buyer = await User.findById(buyerId);
+  if (!buyer) {
+    return res.status(404).json({ status: "fail", message: "User not found" });
+  }
 
   // Ensure product exists
   const product = await Product.findById(productId);
   if (!product) {
     return res.status(404).json({ status: "fail", message: "Product not found" });
+  }
+
+  // ✅ STOCK VALIDATION: Check if product is available and has sufficient quantity
+  if (!product.isAvailable || product.isInactive) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Product is not available",
+    });
+  }
+
+  if (product.quantity < quantity) {
+    return res.status(400).json({
+      status: "fail",
+      message: `Insufficient stock. Only ${product.quantity} unit(s) available`,
+    });
   }
 
   // Create cart if buyer doesn't have one
@@ -88,6 +107,13 @@ console.log("add to cart called controller")
   );
 
   if (existingProduct) {
+    // Validate new quantity against available stock
+    if (product.quantity < quantity) {
+      return res.status(400).json({
+        status: "fail",
+        message: `Insufficient stock. Only ${product.quantity} unit(s) available`,
+      });
+    }
     existingProduct.quantity = quantity;
   } else {
     cart.products.push({ product: productId, quantity });
@@ -117,14 +143,16 @@ exports.deleteFromCart= asyncHandler(async(req,res)=>{
 	 const cart= await  Cart.findById(user.cart)
 	if(!cart.products)
 		throw new Error("cart is empty")
-	 const product= cart.products.find(p=>p.product.toString()===productId)
+	console.log(cart.products[0].product.toString());
+	console.log(productId);
+	 const product= cart.products.find(p=>p.product.toString()===productId.toString())
 	if(!product){
-		throw new Error("no product availbale in this cart")
-		
+		throw new Error("this product in not available in cart")
+
 	}
 	
-	cart.products=cart.products.filter(p=>p.product.toString()!==productId)
-	console.log(cart.products);
+	cart.products=cart.products.filter(p=>p.product.toString()!==productId.toString())
+	
 	await cart.save();
 	res.status(201).json({
 		status:"sucess",

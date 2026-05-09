@@ -2,6 +2,7 @@ const { verify } = require("jsonwebtoken");
 
 exports.isLoggedin = (req, res, next) => {
 	const token = req.headers.authorization?.split(" ")[1];
+	console.log( req.headers.authorization);
 	if (!token) {
 		return next(new Error("token not found"));
 	}

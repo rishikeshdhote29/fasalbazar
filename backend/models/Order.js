@@ -15,11 +15,13 @@ const orderSchema= new mongoose.Schema({
     },
     status:{
         type:String,
-        enum:["pending","transit","pending"]
+        // kept enum values aligned with frontend TrackOrder steps
+        enum:["order placed","processing","shipped","out for delivery","delivered","cancelled"],
+        default:"order placed"
     },
     orderDate:{
         type:Date,
-        default:Date.now()
+        default:Date.now
     },quantity:{
         type:Number,
     },
@@ -28,25 +30,28 @@ const orderSchema= new mongoose.Schema({
         
     },amount:{
         type:Number,
-        required:true,
-    },
+        required:true,},
+    
     product:{
          type:mongoose.Schema.Types.ObjectId,
-         ref:"Products"
-    },
+         ref:"Product"
+    }
+    ,
+         
      paymentMethod:{
-         type: String,
-         enum:["upi","card","netBanking"]
+     
+         enum:["upi","card","netBanking"],
+        type:String,
+        required:true
+     },
+     pincode:{
+        type:String,
+        required:true
      }
-     ,
-     address:{
+        ,address:{
+            type:String,
+            
         
-            street:String,
-            city:String,
-            state:String,
-            postalCode:String,
-            country:String
-
      }   
 
 
