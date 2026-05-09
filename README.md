@@ -99,7 +99,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "ok",
-  "service": "blogspire-backend",
+  "service": "fasalbazar-backend",
   "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
@@ -127,7 +127,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "success": true,
-  "message": "user register succesfuly"
+  "message": "user register successfully"
 }
 ```
 
@@ -151,7 +151,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "user logid in success fully",
+  "message": "user logged in successfully",
   "user": {
     "name": "John Doe",
     "token": "<jwt_token>",
@@ -236,7 +236,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "password reset token to your email succesfully"
+  "message": "password reset token sent to your email successfully"
 }
 ```
 
@@ -288,7 +288,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "success": true,
-  "message": "Seller register succesfuly"
+  "message": "Seller register successfully"
 }
 ```
 
@@ -312,7 +312,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "Seller logid in success fully",
+  "message": "Seller logged in successfully",
   "user": {
     "name": "Farm Fresh Co.",
     "token": "<jwt_token>",
@@ -374,7 +374,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "seller  profile updated",
+  "message": "seller profile updated",
   "newUser": { ... }
 }
 ```
@@ -562,7 +562,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "product detaisl fetched Successfuly",
+  "message": "product details fetched successfully",
   "product": {
     "_id": "<id>",
     "name": "Fresh Tomatoes",
@@ -624,7 +624,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "product deleted successfuly"
+  "message": "product deleted successfully"
 }
 ```
 
@@ -681,7 +681,7 @@ Base URL: `http://localhost:3030`
 **Response `201`:**
 ```json
 {
-  "status": "sucess",
+  "status": "success",
   "message": "product deleted successfully",
   "cart": { ... }
 }
@@ -699,7 +699,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "cart fetched successfuly",
+  "message": "cart fetched successfully",
   "cart": {
     "_id": "<cart_id>",
     "buyer": "<user_id>",
@@ -788,7 +788,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "order details fetched successffuly",
+  "message": "order details fetched successfully",
   "order": {
     "_id": "<id>",
     "orderId": "ORD-XXXXXX",
@@ -843,7 +843,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "order details list  fetched successffuly",
+  "message": "order details list fetched successfully",
   "orders": [
     {
       "_id": "<order_id>",
@@ -868,7 +868,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "order details list  fetched successffuly",
+  "message": "order details list fetched successfully",
   "orders": [
     {
       "_id": "<order_id>",
@@ -959,7 +959,7 @@ Base URL: `http://localhost:3030`
 ```json
 {
   "status": "success",
-  "message": "order cancelled successffuly",
+  "message": "order cancelled successfully",
   "orderDetails": {
     "_id": "<id>",
     "status": "cancelled",
