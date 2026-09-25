@@ -10,7 +10,7 @@ const sellerRoutes= require("./routes/sellerRoutes");
 
 const orderRoutes= require("./routes/orderRoutes");
 
-const connectDB= require("./database");
+const connectDB= require("./config/database");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
 const cors = require("cors");
 app.use(cors({
@@ -45,11 +45,17 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-const port=3030;
+const port=3000;
 
 
-   connectDB()
-    app.listen(port,()=>{
-      console.log("server is running on port "+port);})
+const startServer = async () => {
+  await connectDB();
+  app.listen(port, () => {
+    console.log("server is running on port " + port);
+  });
+};
+
+startServer().catch(() => {
+  process.exitCode = 1;
+});
    
-

@@ -22,6 +22,7 @@ exports.register = asyncHandler( async (req, res, next) => {
 	const hashedPassword= await bcrypt.hash(password,salt);
 	const newUser= await User.create({
 		name,email,password:hashedPassword});
+	console.log("register function created successfully.......")
 	res.status(201).json({
 		success:true,
 		message:"user register succesfuly",
@@ -105,7 +106,7 @@ exports.updateProfile=asyncHandler(async(req,res)=>{
 const updateUser= req.body;
 	const id =  req.userId;
   const user = await User.findOne({_id:id});
-  
+  console.log(user)
   if(!user){
 	console.log(user)
 	throw new Error("user not found");

@@ -1,8 +1,15 @@
 const mongoose = require("mongoose");
 const { faker } = require("@faker-js/faker");
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 const Product = require("../models/Product"); // adjust path
 
-mongoose.connect("mongodb://localhost:27017/fasalbazar")
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  throw new Error("MONGO_URI is not configured");
+}
+
+mongoose.connect(mongoUri, { dbName: "fasalbazar" })
   .then(() => console.log("✅ MongoDB connected"))
   .catch(err => console.error("❌ Connection error:", err));
 
