@@ -59,7 +59,8 @@ const Products = () => {
 	  const headers={
 		Authorization:`Bearer ${loggedinUser.token}`
 	  }
-      const url = `http://localhost:3030/api/cart/add-to-cart/${productId}`;
+	  const baseUrl = import.meta.env.VITE_BASE_URL ;
+      const url = `${baseUrl}/cart/add-to-cart/${productId}`;
       const response = await axios.put(url, { quantity }, { headers });
 	 
 	  console.log("response from add to cart", response);

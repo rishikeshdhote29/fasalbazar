@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import { fetchProductDetailsAction } from '../../redux/productSlice.js';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3030/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ProductDetails = () => {
 	const { id } = useParams();

@@ -46,7 +46,8 @@ const Products = () => {
 						return Swal.showValidationMessage("Please enter a valid quantity");
 					}
 					const headers = { Authorization: `Bearer ${loggedinUser.token}` };
-					const url = `http://localhost:3030/api/cart/add-to-cart/${productId}`;
+							const baseUrl = import.meta.env.VITE_BASE_URL ;
+					const url = `${baseUrl}/cart/add-to-cart/${productId}`;
 					const response = await axios.put(url, { quantity }, { headers });
 					if (response.status !== 201) {
 						return Swal.showValidationMessage(response.data.message || "Request failed");

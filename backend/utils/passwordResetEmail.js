@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 
 // Load environment variables
 dotenv.config();
-
+const baseUrl = process.env.BASE_URL ; // Default to localhost if BASE_URL is not set
 const sendEmail = async (to, resetToken) => {
   try {
     // Create a transport object
@@ -25,7 +25,7 @@ const sendEmail = async (to, resetToken) => {
       html: `
         <p>You are receiving this email because you (or someone else) requested a password reset.</p>
         <p>Please click on the following link or paste it into your browser to complete the process:</p>
-        <p><a href="http://localhost:5173/reset-password/${resetToken}">Reset Password</a></p>
+        <p><a href="${baseUrl}/reset-password/${resetToken}">Reset Password</a></p>
         <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
       `,
     };

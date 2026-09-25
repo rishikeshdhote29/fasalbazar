@@ -22,7 +22,7 @@ const navigate = useNavigate();
 		setStatusMap(map);
 	},[orders])
 
-	const BASE_URL = import.meta.env.VITE_BASE_URL   || 'http://localhost:3030/api';
+	const BASE_URL = import.meta.env.VITE_BASE_URL ;
 
 	const handleStatusChange = (orderId, value) => {
 		setStatusMap(prev=> ({...prev, [orderId]: value}));
