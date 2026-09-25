@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3030/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL ;
 
 const statusSteps = [
   'order placed',

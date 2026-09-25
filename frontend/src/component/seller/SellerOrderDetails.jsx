@@ -11,7 +11,7 @@ const SellerOrderDetails = () => {
   const [error, setError] = useState(null);
   const loggedinUser = useSelector(state => state.Users?.loggedinUser);
   const token = loggedinUser?.token;
-  const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3030/api';
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
     if (!id) return;
