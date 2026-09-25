@@ -20,7 +20,7 @@ const initialState = {
  
 
 };
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3030/api";
+const BASE_URL = import.meta.env.VITE_BASE_URL ;
 // fetch products
 export const getAllProductsAction = createAsyncThunk(
     'product/getAllProducts',

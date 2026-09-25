@@ -13,7 +13,7 @@ const initialState = {
   
 
 };
-const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3030/api";
+const BASE_URL = import.meta.env.VITE_BASE_URL ;
 // place order
 export const palceOrderAction = createAsyncThunk(
     'order/createOrder',
