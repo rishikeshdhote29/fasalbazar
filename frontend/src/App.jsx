@@ -4,7 +4,6 @@ import PrivateNavbar from "./component/user/PrivateNavbar.jsx";
 import Register from './component/auth/Register.jsx';
 import Success from './component/utils/Success.jsx';
 import TrackOrder from './component/utils/TrackOrder.jsx';
-
 import { BrowserRouter, Routes, Route } from "react-router";
 import {useSelector} from "react-redux";
 import UserProfile from "./component/user/UserProfile.jsx";
@@ -37,7 +36,7 @@ import ResetPassword from "./component/auth/ResetPassword.jsx";
 function App() {
     const user= useSelector(state => state.Users.loggedinUser)
   const {isLoggedIn}= useSelector(state => state.Users);
-  console.log(user)
+ 
   return (
        <BrowserRouter>
 <div>

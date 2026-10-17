@@ -1,7 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const Seller = require("../models/Seller");
-
+const redis= require("redis");
 const Product = require("../models/Product");
+const {redisClient} = require("../config/redis");
 
 exports.createProduct = asyncHandler(async (req, res) => {
   
@@ -83,9 +84,12 @@ exports.getAllProducts= asyncHandler(async(req,res)=>{
     const user= await Seller.findById(req.userId);
     const updateData=req.body;
     const productId= req.params.id;
-
-    const product = user.products.find(p => p.toString() === productId.toString());
-    console.log(product)
+let product = redisClient.get(productId);
+if(product){
+    redisClient.del(productId);
+}
+     product = user.products.find(p => p.toString() === productId.toString());
+   
     if(!product){
         throw new Error("you are the not authorize to update to this product");
     }
@@ -107,8 +111,12 @@ exports.getAllProducts= asyncHandler(async(req,res)=>{
 
 exports.deleteProduct=asyncHandler(async(req,res)=>{
 const productId= req.params.id;
+let product = redisClient.get(productId);
+if(product){
+    redisClient.del(productId);
+}
 const sellerId= req.userId;
-const  product= await Product.findOne({_id:productId});
+ product= await Product.findOne({_id:productId});
 if (sellerId !== product?.seller?._id?.toString()) {
     throw new Error("you can only delete you product")
 }
@@ -148,9 +156,18 @@ exports.sellerListing= asyncHandler(async (req,res)=>{
 // @route get /products/:id
 //acceses public
 exports.productDetails= asyncHandler(async(req,res)=>{
+  
+  let product = await redisClient.get(req.params.id);
+    if(!product){
+     product=await Product.findById(req.params.id);
+     if(product)
+    await  redisClient.set(req.params.id,JSON.stringify(product),"EX",30*60);
     
-    console.log(req.params.id)
-    const product=await Product.findById(req.params.id);
+    
+    }else{
+        product=JSON.parse(product);
+    }
+    
     
     if(!product){
         throw new Error ("product not found");

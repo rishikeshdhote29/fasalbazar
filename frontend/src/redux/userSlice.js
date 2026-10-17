@@ -9,7 +9,6 @@ const storedUser = (() => {
     return null;
   }
 })();
-console.log("stored user",storedUser);
 const initialState = {
   success: false,
   error: null,

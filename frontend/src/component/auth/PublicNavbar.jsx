@@ -7,7 +7,7 @@ const PublicNavbar = () => {
 const navigate= useNavigate();
   const navLinks = [
     { label: "Home", href: "/" },
-    { label: "Browse Products", href: "/crops" },
+    { label: "Browse Products", href: "/products" },
     { label: "My Orders", href: "/orders" },
     { label: "Cart", href: "/cart" },
   ];

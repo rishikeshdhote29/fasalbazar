@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 const Products = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const {products, pagination, loading} = useSelector(state => state.Products);
+	const {products, pagination, loading,error} = useSelector(state => state.Products);
 	const {loggedinUser} = useSelector(state => state.Users);
 	const [sortBy, setSortBy] = useState("newest");
 	const [page, setPage] = useState(1);
@@ -114,7 +114,7 @@ const Products = () => {
 
 			<div className="w-full mx-auto">
 				{sortedProducts.length === 0 ? (
-					<p className={"text-center text-gray-500"}>No products available</p>
+					<p className={"text-center text-gray-500"}>{error}</p>
 				) : (
 					<div className={"w-full gap-4 max-w-10/10 mx-auto grid grid-cols-1 place-content-center md:grid-cols-2 lg:grid-cols-4"}>
 						{sortedProducts.map((product) => (
