@@ -1,16 +1,15 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router";
-import {fetchSellerAction, fetchUserAction} from "../../redux/userSlice.js";
+import {fetchSellerAction} from "../../redux/sellerSlice.js";
 
 const SellerProfile = () => {
 	const dispatch = useDispatch();
-	const {userType} = useSelector(state=> state.Users);
 const navigate = useNavigate();
 	useEffect(() => {
 		dispatch(fetchSellerAction());
 	}, [dispatch]);
-	const user = useSelector(state=> state.Users.user);
+	const user = useSelector(state=> state.Sellers.seller);
 	return (
 		<div className='flex   justify-center min-h-screen bg-green-100'>
 			<div className="max-w-3/5 mt-10 w-full ">

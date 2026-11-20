@@ -1,12 +1,12 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getAllProductsAction} from "../../redux/productSlice.js";
+import {searchProductsAction} from "../../redux/userProductSlice.js";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const SearchResult = () => {
 	const dispatch= useDispatch();
-	const {products}=useSelector(state=> state.Products)
+	const {products}=useSelector(state=> state.UserProducts)
 	const {loggedinUser}= useSelector(state => state.Users)
 	const [sortBy, setSortBy] = useState("newest");
 

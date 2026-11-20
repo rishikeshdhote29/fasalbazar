@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getAllProductsAction} from "../../redux/productSlice.js";
+import {getAllProductsAction} from "../../redux/userProductSlice.js";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 const Products = () => {
 	const dispatch= useDispatch();
 	const navigate = useNavigate();
-	const {products}=useSelector(state=> state.Products)
+	const {products}=useSelector(state=> state.UserProducts)
 	const {loggedinUser}= useSelector(state => state.Users)
 	const [sortBy, setSortBy] = useState("newest");
 

@@ -3,8 +3,10 @@ const asyncHandler = require("express-async-handler");
 const bcrypt= require("bcrypt");
 const jwt=require("jsonwebtoken");
 const crypto = require('crypto');
+const cloudinary = require("cloudinary").v2;
 const Seller = require("../models/Seller");
 const sendEmail = require("../utils/passwordResetEmail");
+const { uploadSellerImage, deleteCloudinaryImage } = require("../utils/cloudinary");
 
 //@Seller register
 //@route POST /api/seller/auth/register
@@ -38,23 +40,27 @@ exports.register = asyncHandler( async (req, res, next) => {
 //@access public
 
 exports.loginSeller=asyncHandler(async(req,res)=>{
-	
+
 	const {email,password}=req.body;
 	
 	const seller= await Seller.findOne({email});
 	if (!seller){
-		throw new Error("invalid Creadtials");
+		const error = new Error("invalid credentials");
+		error.statusCode = 401;
+		throw error;
 
 	}
   const isMatch= await bcrypt.compare(password,seller.password);
 	if (!isMatch){
-		throw new Error("invalid Creadtials");
+		const error = new Error("invalid credentials");
+		error.statusCode = 401;
+		throw error;
 
 	}
 	
 
 
-	const token=jwt.sign({id:seller._id},process.env.JWT_SECRET,{ expiresIn: '10d' })
+	const token=jwt.sign({id:seller._id,role:"seller"},process.env.JWT_SECRET,{ expiresIn: '10d' })
 
 	res.status(200).json({
 		status:"success",
@@ -81,10 +87,12 @@ exports.loginSeller=asyncHandler(async(req,res)=>{
 exports.sellerProfile=asyncHandler(async(req,res)=>{
 
 const id =req.userId;
+	console.log("hello "+req.userId);
 const seller= await Seller.findById(id).select("-password");
+
 if(!seller){
 	throw new Error("Seller not found");
-	
+
 	}
 
 	res.status(200).json({
@@ -115,14 +123,16 @@ const updateUser= req.body;
 	throw new Error("seller not found");
 
   }
-  if (req.file && req.file.path) {
-	updateUser.avatar = req.file.path;
+ 
+  if (req.file?.buffer) {
+    await deleteCloudinaryImage(user.avatar);
+    updateUser.avatar = await uploadSellerImage(req.file);
   }
 	const newUser= await Seller.findByIdAndUpdate(id,updateUser,{ new: true, runValidators: true }).select("-password");
   res.status(200).json({
 	status:"success",
 	message:"seller  profile updated",
-	newUser
+	user:newUser
   })
 
 

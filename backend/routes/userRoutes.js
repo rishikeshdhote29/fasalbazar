@@ -6,7 +6,10 @@ const {isLoggedin} = require("../middleware/isLoggedin");
 const multer= require("multer")
 
 const storage= require("../utils/cloudinary");
-const parser= multer({storage});
+const parser = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
 Router.post("/register",register);
 Router.post("/login",loginUser);
 Router.get("/profile",isLoggedin,userProfile)

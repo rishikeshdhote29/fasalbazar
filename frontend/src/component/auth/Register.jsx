@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import{ useDispatch, useSelector} from 'react-redux'
-import { registerAction,sellerRegisterAction } from '../../redux/userSlice.js';
+import { registerAction } from '../../redux/userSlice.js';
+import { sellerRegisterAction } from '../../redux/sellerSlice.js';
 import Success from "../utils/Success.jsx"
+import {useNavigate} from "react-router";
 const Register = () => {
 	const dispatch= useDispatch();
+	const navigate=useNavigate();
 const [formData,setFormData]= useState({
 	name:'',
 	email:"",
 	password:"",
 })
 const [user,setUser]=useState("");
-const {loading,success}= useSelector(state => state.Users)
+const userAuth = useSelector(state => state.Users);
+const sellerAuth = useSelector(state => state.Sellers);
+const auth = user === "seller" ? sellerAuth : userAuth;
+const {loading,success,error}= auth;
 
 
 
@@ -26,7 +32,11 @@ const handleOnChange=(e) =>{
 }
 const 	 handleSubmit=(e)=>{
 		 e.preventDefault();
-	if(user==="farmer")
+	if (!user) {
+		return;
+	}
+
+	if(user==="seller")
 		dispatch(sellerRegisterAction(formData));
 	else
 		dispatch(registerAction(formData));
@@ -39,7 +49,9 @@ const 	 handleSubmit=(e)=>{
 		
 		
 		<div className='h-screen bg-linear-to-r/shorter from-indigo-500 to-teal-400'>
-			{success && <Success message="Registration Successful!" />}
+			{success && <Success message="Registration Successful!" />
+			}
+			{success && navigate("/login")}
 			<div className='items-center pt-10'>
 				<div className="w-full max-w-md mx-auto  p-6 bg-white rounded-lg shadow-md">
 			<div  >	<h2  className='mb-4 text-2xl md:text-3xl font-bold text-coolGray-900 text-center '>Register </h2></div>
@@ -48,11 +60,11 @@ const 	 handleSubmit=(e)=>{
 				{/* <div><input value className=' gap px-2  rounded-sm bg-green-500 hover:bg-green-600 focus:outline-2 focus:outline-offset-2 focus:outline-green-500 active:bg-green-700 '>Farmer</input></div>
 				<div><input className=' gap px-2 rounded-sm bg-green-500 hover:bg-green-600 focus:outline-2 focus:outline-offset-2 focus:outline-green-500 active:bg-green-700 '>Buyer</input></div> */}
 			  <label>
-            <input type="radio" onClick={handleUser} name="user" value="buyer"  />
+            <input type="radio" onChange={handleUser} name="user" value="buyer" required />
            Buyer 
         </label>
 		 <label>
-            <input type="radio"  onClick={handleUser} name="user" value="seller" />
+            <input type="radio" onChange={handleUser} name="user" value="seller" />
 			Seller/Farmer
         </label>
 			  
@@ -64,6 +76,7 @@ const 	 handleSubmit=(e)=>{
 				
 				<input type="email" name="email" value={formData.email} onChange={handleOnChange} required placeholder='Email' className=' border ps-2 py-1  w-2xs m-4 justify-center item-cente border-color-green rounded-sm'/>
 				<input type="password" name="password" value={formData.password} onChange={handleOnChange} required placeholder='Password' className='ps-2  border  py-1 w-2xs  m-4 justify-center item-cente border-color-green rounded-sm'/>
+				{error && <p className='text-red-600 text-sm'>{error}</p>}
 				<button  className='w-2xs m-4 mt-2 p-1 rounded-sm bg-green-500 hover:bg-green-700 ' >{loading?"Registring":"Register"}</button>
 			</div>
 
