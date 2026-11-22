@@ -45,11 +45,10 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-const port=3030;
+const port = process.env.PORT || 3030;
 
 
    connectDB()
     app.listen(port,()=>{
       console.log("server is running on port "+port);})
    
-
