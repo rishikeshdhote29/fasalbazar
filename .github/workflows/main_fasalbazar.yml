@@ -43,16 +43,13 @@ jobs:
       - name: Prepare deployment package
         run: |
           cp -R frontend/dist backend/dist
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fasalbazar-app
-          path: backend
+          cd backend
+          zip -r ../fasalbazar.zip .
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: backend
+          package: fasalbazar.zip
+          startup-command: npm start

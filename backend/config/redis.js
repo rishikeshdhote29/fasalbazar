@@ -1,20 +1,31 @@
 const { createClient } = require("redis");
-const chalk = require("chalk").default;
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || "redis://127.0.0.1:6379",
-});
+const redisUrl = process.env.REDIS_URL;
+const redisClient = redisUrl
+  ? createClient({ url: redisUrl })
+  : {
+      get: async () => null,
+      set: async () => false,
+      del: async () => false,
+    };
 
-redisClient.on("error", (err) => {
-  console.error( chalk.red.bold("Redis error:", err.message));
-});
+if (redisUrl) {
+  redisClient.on("error", (err) => {
+    console.error("Redis error:", err.message);
+  });
+}
 
 async function connectRedis() {
+  if (!process.env.REDIS_URL) {
+    console.log("Redis URL is not configured; continuing without Redis");
+    return;
+  }
+
   if (!redisClient.isOpen) {
     await redisClient.connect();
   }
 
-  console.log(chalk.green.bold("Redis connected"));
+  console.log("Redis connected");
 }
 
 module.exports = { redisClient, connectRedis };
