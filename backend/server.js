@@ -8,7 +8,6 @@ const productRoutes= require("./routes/productRoutes");
 const cartRoutes= require("./routes/cartRoutes");
 const sellerRoutes= require("./routes/sellerRoutes");
 const  rateLimit = require("express-rate-limit")
-const chalk = require("chalk").default;
 const orderRoutes= require("./routes/orderRoutes");
 
 const connectDB= require("./config/database");
@@ -51,14 +50,21 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-const port=3000;
+
+const frontendDist = path.join(__dirname, "dist");
+app.use(express.static(frontendDist));
+app.get("/{*splat}", (req, res) => {
+  res.sendFile(path.join(frontendDist, "index.html"));
+});
+
+const port = process.env.PORT || 3000;
 
 
 const startServer = async () => {
   await connectDB();
     await connectRedis();
   app.listen(port, () => {
-    console.log(chalk.green.bold("server is running on port " + port));
+      console.log("server is running on port " + port);
 
   });
 };
