@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import {forgetPasswordAction, resetPasswordAction, resetSellerPasswordAction} from "../../redux/userSlice.js";
+import {resetPasswordAction} from "../../redux/userSlice.js";
+import {resetSellerPasswordAction} from "../../redux/sellerSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
 import Success from "../utils/Success.jsx";
@@ -8,7 +9,10 @@ import ErrorMsg from "../utils/ErrorMsg.jsx";
 const ResetPassword = () => {
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
-  const {success,error}= useSelector(state => state.Users)
+  const userAuth = useSelector(state => state.Users);
+  const sellerAuth = useSelector(state => state.Sellers);
+  const auth = userType === "seller" ? sellerAuth : userAuth;
+  const {success,error}= auth;
 const [userType,setUserType]= useState("");
   const dispach= useDispatch();
     const { token } = useParams();
@@ -28,7 +32,7 @@ dispach(resetPasswordAction({password:password1,token:token}))
   
   }
   
-  function handleUser() {
+  function handleUser(e) {
     setUserType(e.target.value)
     
   }

@@ -1,153 +1,185 @@
-# 🌾 FasalBazar
+# FasalBazar
 
-FasalBazar is a full-stack agricultural e-commerce marketplace designed to connect **farmers/sellers with buyers**. The platform provides separate workflows for buyers and sellers, allowing sellers to manage products and buyers to browse, purchase, and track orders.
+FasalBazar is a full-stack agricultural marketplace that connects buyers with sellers/farmers. It includes separate buyer and seller workflows, product management, cart and checkout, Razorpay payments, order management, public order tracking, and password reset.
 
-## 🚀 Features
+## Features
 
-### 👤 Buyer Features
+### Buyers
 
-- User registration and login
-- Browse agricultural products
-- Search and explore products
-- Add products to cart
-- Manage shopping cart
-- Place orders
-- View order history
-- Track order status
-- Manage user profile
+- Register, log in, and manage profiles and avatars
+- Browse, search, and view products
+- Add products to a cart and update quantities
+- Checkout and pay through Razorpay
+- View and cancel orders
+- Track orders using a public tracking ID
 
-### 🌾 Seller / Farmer Features
+### Sellers/Farmers
 
-- Seller registration and login
-- Seller profile management
-- Add new products
-- Update product information
-- Delete products
-- Manage listed products
-- View and manage customer orders
+- Register, log in, and manage seller profiles
+- Create, update, and deactivate product listings
+- Upload product and profile images
+- View buyer orders
+- Update order status
+- View seller-specific order details
 
-### 🔐 Authentication & Security
+### Platform
 
-- JWT-based authentication
-- Role-Based Access Control (RBAC)
-- Separate buyer and seller workflows
-- Secure password hashing
-- Forgot password functionality
-- Email-based password reset
+- Separate Redux state for buyers and sellers
+- Separate buyer and seller frontend routes
+- JWT authentication and bcrypt password hashing
+- Cloudinary image storage
+- Redis-backed product caching
+- MongoDB/Mongoose persistence
+- Nodemailer password-reset and order emails
 
-### 🛒 E-Commerce
+## Tech Stack
 
-- Product catalog
-- Product details
-- Shopping cart
-- Order processing
-- Order management
-- Buyer and seller workflows
+| Area | Technologies |
+|---|---|
+| Frontend | React 19, Vite 8, Redux Toolkit, React Router, Axios, Tailwind CSS |
+| Backend | Node.js, Express 5, JWT, bcrypt, Multer |
+| Database | MongoDB, Mongoose |
+| Cache | Redis |
+| Images | Cloudinary |
+| Payments | Razorpay |
+| Email | Nodemailer with Gmail SMTP |
 
-### 🖼️ Image Management
+## Project Structure
 
-- Product image uploads
-- Cloudinary integration
-- Multer for handling file uploads
+```text
+fasal-bazar/
+├── frontend/
+│   ├── src/
+│   │   ├── auth/
+│   │   ├── component/
+│   │   │   ├── auth/
+│   │   │   ├── buyer/
+│   │   │   ├── seller/
+│   │   │   ├── order/
+│   │   │   └── utils/
+│   │   └── redux/
+│   └── vite.config.js
+└── backend/
+    ├── config/
+    ├── controllers/
+    ├── middleware/
+    ├── models/
+    ├── payment/
+    ├── routes/
+    ├── utils/
+    └── server.js
+```
 
-### 💳 Payment
+## Redux Slices
 
-- Stripe payment integration
+The frontend keeps buyer and seller state isolated:
 
----
+- `Users` - buyer authentication and profile
+- `Sellers` - seller authentication and profile
+- `UserProducts` - buyer catalog, product details, and cart
+- `SellerProducts` - seller listings and listing updates
+- `UserOrders` - buyer checkout and order history
+- `SellerOrders` - seller order management
 
-## 🛠️ Tech Stack
+## Prerequisites
 
-### Frontend
+- Node.js 20 or newer
+- MongoDB
+- Redis
+- Cloudinary account
+- Gmail account with an app password
+- Razorpay test account
 
-- React.js
-- Vite
-- Redux Toolkit
-- JavaScript
-- Tailwind CSS
-- Bootstrap
-- Axios
+## Environment Variables
+
+Copy `backend/.env.example` to `backend/.env`, then configure:
+
+```dotenv
+MONGO_URI=mongodb://127.0.0.1:27017/fasalbazar
+JWT_SECRET=replace-with-a-long-random-secret
+REDIS_URL=redis://127.0.0.1:6379
+
+CLOUDINARY_CLOUD_NAME=your-cloudinary-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_SECRET_KEY=your-cloudinary-api-secret
+
+RAZORPAY_KEY_ID=rzp_test_your_key_id
+RAZORPAY_KEY_SECRET=your-razorpay-key-secret
+
+GMAIL_USER=your-gmail-address
+APP_PASSWORD=your-gmail-app-password
+BASE_URL=http://localhost:5173
+```
+
+The frontend uses `frontend/.env`:
+
+```dotenv
+VITE_BASE_URL=http://localhost:3000/api
+VITE_RAZORPAY_KEY_ID=rzp_test_your_key_id
+```
+
+Never commit real credentials or `.env` files.
+
+## Installation
+
+```bash
+git clone https://github.com/rishikeshdhote29/fasalbazar.git
+cd fasalbazar
+```
 
 ### Backend
 
-- Node.js
-- Express.js
-- REST APIs
-- JWT
-- Bcrypt
-
-### Database
-
-- MongoDB
-- Mongoose
-
-### Third-Party Services
-
-- Cloudinary
-- Stripe
-- Nodemailer
-
-### Tools
-
-- Git
-- GitHub
-- Postman
-
----
-
-## 🏗️ Project Structure
-
-```text
-FasalBazar/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── redux/
-│   │   ├── pages/
-│   │   └── App.jsx
-│   │
-│   ├── package.json
-│   └── vite.config.js
-│
-└── backend/
-    ├── models/
-    ├── controllers/
-    ├── routes/
-    ├── middleware/
-    ├── config/
-    └── server.js
-⚙️ Installation
-1. Clone Repository
-git clone https://github.com/rishikeshdhote29/fasalbazar.git
-cd fasalbazar
-2. Backend Setup
+```bash
 cd backend
 npm install
+npx nodemon server.js
+```
 
-Create a .env file:
+The API runs on `http://localhost:3000`.
 
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+### Frontend
 
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+In another terminal:
 
-STRIPE_SECRET_KEY=your_stripe_secret_key
-
-EMAIL_USER=your_email
-EMAIL_PASSWORD=your_email_password
-
-Start the backend:
-
-npm run dev
-3. Frontend Setup
-
-Open another terminal:
-
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
-The application will run locally using the Vite development server.
+The Vite development server normally runs on `http://localhost:5173`.
+
+## Available Frontend Commands
+
+```bash
+npm run dev      # Start the Vite development server
+npm run build    # Create a production build
+npm run lint     # Run ESLint
+npm run preview  # Preview the production build
+```
+
+## Main API Routes
+
+| Area | Base route |
+|---|---|
+| Buyers | `/api/auth` |
+| Sellers | `/api/seller/auth` |
+| Products | `/api/product` |
+| Cart | `/api/cart` |
+| Orders/payments | `/api/order` |
+| Health check | `/api/health` |
+
+## Payment Flow
+
+1. The buyer adds available products to the cart.
+2. Checkout asks the backend to calculate the cart total and create a Razorpay order.
+3. Razorpay opens for the buyer.
+4. The frontend sends the payment response to `/api/order/verify`.
+5. The backend verifies the Razorpay signature before creating application orders and updating inventory.
+
+## Security Notes
+
+- Keep `JWT_SECRET`, Cloudinary credentials, Gmail app passwords, and Razorpay secrets outside source control.
+- Rotate credentials immediately if they have been exposed.
+- Buyer and seller routes enforce separate frontend guards and backend middleware.
+- Public order tracking intentionally exposes only the order status and non-buyer details.

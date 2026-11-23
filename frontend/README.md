@@ -1,16 +1,30 @@
-# React + Vite
+# FasalBazar Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React and Vite frontend for FasalBazar.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Create `.env`:
 
-## React Compiler
+```dotenv
+VITE_BASE_URL=http://localhost:3000/api
+VITE_RAZORPAY_KEY_ID=rzp_test_your_key_id
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Install and run:
 
-## Expanding the ESLint configuration
+```bash
+npm install
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Commands
+
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run preview
+```
+
+Redux state is divided by account and domain under `src/redux`. Buyer and seller pages use separate route guards from `src/auth/ProtectedRoutes.jsx`.

@@ -1,14 +1,21 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {fetchOrdersAction, fetchSellerOrdersAction} from "../../redux/orderSlice.js";
-import {deleteListedProductAction, fetchSellerListing} from "../../redux/productSlice.js";
+import {deleteListedProductAction, fetchSellerListing} from "../../redux/sellerProductSlice.js";
 import {useNavigate} from "react-router";
 import Swal from "sweetalert2";
 
 const MyOrder = () => {
-	const {products,success}= useSelector(state=> state?.Products)
+	const {listings: products,success}= useSelector(state=> state?.SellerProducts)
 	const dispatch= useDispatch();
 	const navigate= useNavigate();
+	const sortedProducts = useMemo(() => {
+		const list = Array.isArray(products) ? [...products] : [];
+		return list.sort((a, b) => {
+			const aTime = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+			const bTime = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+			return (Number.isFinite(bTime) ? bTime : 0) - (Number.isFinite(aTime) ? aTime : 0);
+		});
+	}, [products]);
 	useEffect(() => {
 		dispatch(fetchSellerListing())
 	},[dispatch]
@@ -35,11 +42,21 @@ const MyOrder = () => {
   if (result.isConfirmed)
   {
 		  dispatch(deleteListedProductAction({id}))
-	  Swal.fire({
-    title: "Deleted!",
-    text: "Your file has been deleted.",
-    icon: "success"
-  });
+		    .unwrap()
+		    .then(() => {
+		      Swal.fire({
+		        title: "Deleted!",
+		        text: "Your product has been unlisted.",
+		        icon: "success"
+		      });
+		    })
+		    .catch((message) => {
+		      Swal.fire({
+		        title: "Delete failed",
+		        text: message,
+		        icon: "error"
+		      });
+		    });
   }
 });
 		
@@ -48,12 +65,12 @@ const MyOrder = () => {
 	return (
 		<div>
 			<div className={"flex flex-col  w-full justify-center items-center rounded-lg bg-gray-100 p-4 gap-4 mb-4"}>
-				{products.map((product)=>{
+				{sortedProducts.map((product,index)=>{
 					return (
 <div className={" max-w-5/6 w-full"}>
 				
 				<div  	key={product._id || index} className={"flex  justify-center shadow-lg gap-4"}>
-					<div onClick={()=>navigate(`/products/${product._id}`)} >
+					<div onClick={()=>navigate(`product/${product._id}`)} >
 						<img
 							src={product.images}
 							alt="Product Image"
@@ -61,7 +78,8 @@ const MyOrder = () => {
 						/>
 
 					</div>
-					<div onClick={()=>navigate(`/products/${product._id}`)}  className={"flex flex-row w-full  "}>
+					<div  className={"flex flex-row w-full  "}>
+						
 						<div className={"ms-5 w-full  max-w-3/5 "}>
 							<h1 className={"text-lg"}>{product.name}</h1>
 							<h1 className={"text-lg"}>{product.description}</h1>

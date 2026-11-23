@@ -5,7 +5,7 @@ import {fetchUserAction} from "../../redux/userSlice.js";
 
 const UserProfile = () => {
 	const dispatch = useDispatch();
-	const {userType} = useSelector(state=> state.Users);
+	const userState = useSelector(state=> state.Users);
 const navigate = useNavigate();
 	useEffect(() => {
 		dispatch(fetchUserAction());
@@ -24,7 +24,7 @@ const navigate = useNavigate();
 					<p className='text-lg  ms-10 '><span className='font-semibold'>Name:</span> {user?.name||"not available"}</p>
 					<p className='text-lg  ms-10'><span className='font-semibold'>Email:</span> {user?.email||"not available"}</p>
 					
-					 <p className='text-lg  ms-10'><span className='font-semibold'>Role:</span> {userType||"not available"}</p>
+					 <p className='text-lg  ms-10'><span className='font-semibold'>Role:</span> {" Buyer"}</p>
 					 <p className='text-lg  ms-10'><span className='font-semibold'>mobileNo:</span> {user?.mobileNo||"not" +
 						 " available"}</p>
 					 <p className='text-lg  ms-10'><span className='font-semibold'>Address:</span> {user?.address||"not" +

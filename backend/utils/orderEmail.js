@@ -36,7 +36,7 @@ exports.sendOrderConfirmationEmail = async (recipientEmail, newOrder) => {
              <li><strong>Status:</strong> ${orderObj.status}</li>
              <li><strong>Order Date:</strong> ${new Date(orderObj.orderDate).toLocaleString()}</li>
              <li><strong>Tracking ID:</strong> ${orderObj.trackingId}</li>
-             <li><strong>Payment Method:</strong> ${orderObj.paymentMethod || 'Online Payment'}</li>
+             <li><strong>Payment Method:</strong> ${orderObj.paymentMethod}</li>
            </ul>
           
             <h3>Product Details</h3>

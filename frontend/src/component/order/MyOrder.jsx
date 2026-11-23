@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {calcelOrdersAction, fetchOrdersAction} from "../../redux/orderSlice.js";
+import {cancelOrdersAction, fetchOrdersAction} from "../../redux/userOrderSlice.js";
 import Swal from "sweetalert2";
 import {useNavigate} from "react-router";
 
 const MyOrder = () => {
-	const orders= useSelector(state=> state?.Orders?.orders)
+	const orders= useSelector(state=> state?.UserOrders?.orders)
 	const dispatch= useDispatch();
 	const navigate= useNavigate();
 	useEffect(() => {
@@ -27,7 +27,7 @@ const MyOrder = () => {
 	
   if (result.isConfirmed)
   {
-		  dispatch(calcelOrdersAction({id}))
+		  dispatch(cancelOrdersAction({id}))
 	  Swal.fire({
     title: "Calcelled!",
     text: "Your order has been cancel.",
@@ -42,24 +42,23 @@ const MyOrder = () => {
 			<div className={"flex flex-col  w-full justify-center items-center rounded-lg bg-gray-100 p-4 gap-4 mb-4"}>
 				{orders.map((product, index)=>{
 					return (
-<div className={" max-w-5/6 w-full"}>
+<div key={product._id || index} className={"max-w-5/6 w-full"}>
 					<div className={"flex  justify-evenly w-full"}>
 						<p className={"text-lg font-bold"}>Order ID: {product.orderId}</p>
 					<p className={"text-lg text-end font-bold"}>Tracking Id: {product.trackingId}</p>
 
 					</div>
 
-				<div  	key={product._id || index} className={"flex  justify-center shadow-lg gap-4"}>
-					<div onClick={()=>navigate(`/products/${product.product._id}`)} className={"cursor-pointer"}>
+				<div className={"flex justify-center shadow-lg gap-4"}>
+					<button type="button" onClick={()=>navigate(`/products/${product.product._id}`)} className={"cursor-pointer text-left"}>
 						<img
 							src={product.product.images}
 							alt="Product Image"
 						  	className={"max-w-45 h-45 object-cover rounded-lg"}
 						/>
 
-					</div>
-					<div onClick={()=>navigate(`/products/${product.product._id}`)} className={"flex flex-row w-full" +
-						"  "}>
+					</button>
+					<div className={"flex flex-row w-full text-left"}>
 						<div className={"ms-5 w-full  max-w-3/5 "}>
 							<h1 className={"text-lg"}>{product.product.name}</h1>
 							<h1 className={"text-lg"}>{product.product.description}</h1>
@@ -78,15 +77,22 @@ const MyOrder = () => {
  
 
 						</div>
-						<div className={" max-w-2/5 ms-3 justify-end"}>
-							<button onClick={() => navigate(`/track/${product.trackingId}`)} className={"border" +
-								" rounded p-1" +
-								" border-amber-400" +
-								" my-3" +
-								"  bg-amber-400"}>Track Order </button>
-							<br/>
-							<button onClick={e=>cancelHandle(e,product._id)} className={"border rounded p-1" +
-								" bg-red-700"}>Cancel Order </button>
+						<div className={"flex flex-col max-w-2/5 ms-3 justify-start gap-2"}>
+							<button
+								type="button"
+								onClick={() => navigate(`/track/${product.trackingId}`)}
+								className={"border rounded p-1 border-amber-400 bg-amber-400"}
+							>
+								Track Order
+							</button>
+							<button
+								type="button"
+								onClick={e=>cancelHandle(e,product._id)}
+								disabled={["cancelled", "delivered"].includes(product.status)}
+								className={"border rounded p-1 bg-red-700 text-white disabled:cursor-not-allowed disabled:bg-gray-400"}
+							>
+								Cancel Order
+							</button>
 
 
 
@@ -95,10 +101,8 @@ const MyOrder = () => {
 
 						</div>
 					</div>
-
-
 				</div>
-</div>)
+</div>);
 				}
 
 				)}

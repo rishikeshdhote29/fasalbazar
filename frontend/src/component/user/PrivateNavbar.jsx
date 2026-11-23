@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {useDispatch, useSelector} from 'react-redux'
 import {logoutAction} from "../../redux/userSlice.js";
-import {searchProductsAction} from "../../redux/productSlice.js";
+import {searchProductsAction} from "../../redux/userProductSlice.js";
 import {useNavigate} from "react-router";
 const PrivateNavbar = () => {
 

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { fetchProductDetailsAction } from '../../redux/productSlice.js';
+import { fetchProductDetailsAction } from '../../redux/userProductSlice.js';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -11,7 +11,7 @@ const ProductDetails = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { product, loading, error } = useSelector((state) => state.Products);
+	const { product, loading, error } = useSelector((state) => state.UserProducts);
 	const { loggedinUser } = useSelector((state) => state.Users);
 
 	useEffect(() => {
@@ -183,4 +183,3 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-

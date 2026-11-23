@@ -1,16 +1,18 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import { useState } from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {updateProfileAction, updateSellerProfileAction} from "../../redux/userSlice.js";
+import {fetchSellerAction, updateSellerProfileAction} from "../../redux/sellerSlice.js";
 import {useNavigate} from "react-router";
-import Success from "../utils/Success.jsx";
 const UpdateProfile = () => {
-	const user =useSelector(state => state.Users.loggedinUser);
+	const user =useSelector(state => state.Sellers.seller);
 	  const fileInputRef = useRef(null);
-
 const dispatch = useDispatch();
+useEffect(() => {
+		dispatch(fetchSellerAction());
+	}, [dispatch]);
 const navigate= useNavigate();
-const {success}= useSelector(state => state.Users)
+let {loading,error}= useSelector(state => state.Sellers)
+
 	const safeUser = user || {};
 	const [avatar, setAvatar] = useState(safeUser.avatar || "/img.png");
 	const [avatarFile, setAvatarFile] = useState(null);
@@ -23,6 +25,17 @@ const {success}= useSelector(state => state.Users)
 
 
 	})
+	useEffect(() => {
+		const profile = user || {};
+		setAvatar(profile.avatar || "/img.png");
+		setFormData({
+			name: profile.name || "",
+			email: profile.email || "",
+			mobileNo: profile.mobileNo || "",
+			address: profile.address || "",
+			pincode: profile.pincode || "",
+		});
+	}, [user]);
 	const handleUplaod =()=>{
 	 fileInputRef.current.click();
 
@@ -57,8 +70,8 @@ const {success}= useSelector(state => state.Users)
 	
 	return (
 		<div className="justify-center flex ">
-			{success&& <Success message={"Profile  updated successfully"} />}
-			{success&& navigate('/seller-profile')}
+			{error&& <p className="text-center text-red-600">{error}</p>}
+			{/*{success&& navigate('/seller-profile')}*/}
 			<div className={"max-w-xl max-h-1/2 h-full  w-full  flex mt-5 justify-center item-center  "}>
 				<div className={" gap-7 grid justify-center item-center w-full' "}>
 					<div><p className={"text-center text-5xl font-bold"}>Update Profile</p></div>
@@ -103,7 +116,7 @@ const {success}= useSelector(state => state.Users)
 					<input id="pincode" name={"pincode"} onChange={handleChange} value={formData.pincode} className={"border mt-1" +
 						" w-full p-1 yb-5 rounded-lg "} type="text" />
 
-					<button  className={"bg-yellow-400 rounded-lg p-2 mt-5 w-full"}>Update Profile</button>
+					<button  className={"bg-yellow-400 rounded-lg p-2 mt-5 w-full"}>{loading? <p>updating.....</p> : <p>update </p>}</button>
 
 
 				</form>

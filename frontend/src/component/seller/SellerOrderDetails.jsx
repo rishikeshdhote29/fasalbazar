@@ -9,7 +9,7 @@ const SellerOrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const loggedinUser = useSelector(state => state.Users?.loggedinUser);
+  const loggedinUser = useSelector(state => state.Sellers?.loggedinSeller);
   const token = loggedinUser?.token;
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -102,4 +102,3 @@ const SellerOrderDetails = () => {
 }
 
 export default SellerOrderDetails;
-

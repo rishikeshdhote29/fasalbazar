@@ -40,9 +40,13 @@ const orderSchema= new mongoose.Schema({
          
      paymentMethod:{
      
-         enum:["upi","card","netBanking"],
+        enum:["online","upi","card","netBanking"],
         type:String,
         required:true
+     },
+     paymentId:{
+        type:String,
+        sparse:true
      },
      pincode:{
         type:String,
