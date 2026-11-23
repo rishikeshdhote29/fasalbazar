@@ -452,7 +452,7 @@ const product = await Product.findByIdAndUpdate(
 	orderDetails.product,
 	{
 		$inc: { quantity: orderDetails.quantity },
-		$set: { isAvailable: true }gti
+		$set: { isAvailable: true }
 	},
 	{ new: true }
 );
