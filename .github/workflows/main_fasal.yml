@@ -58,5 +58,4 @@ jobs:
           app-name: fasal
           slot-name: Production
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-          startup-command: npm start
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F42DDB9E3E404E178243CF6FA8402411 }}
