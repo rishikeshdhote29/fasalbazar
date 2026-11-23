@@ -57,13 +57,13 @@ app.get("/{*splat}", (req, res) => {
   res.sendFile(path.join(frontendDist, "index.html"));
 });
 
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT) || 3000;
 
 
 const startServer = async () => {
   await connectDB();
     await connectRedis();
-  app.listen(port, () => {
+  app.listen(port, "0.0.0.0", () => {
       console.log("server is running on port " + port);
 
   });
