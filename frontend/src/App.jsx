@@ -32,6 +32,7 @@ import ResetPassword from "./component/auth/ResetPassword.jsx";
 import OrderHandler from "./component/order/OrderHandler.jsx";
 import OrderSuccess from "./component/order/OrderSuccess.jsx";
 import SellerProductDetails from "./component/seller/SellerProductDetails.jsx";
+import NotFound from "./component/utils/NotFound.jsx";
 
 
 
@@ -91,6 +92,7 @@ function App() {
           <Route path="/my-listing" element={<MyProductListing/>} />
         </Route>
 
+       <Route path="*" element={<NotFound/>} />
         
       </Routes>
       </div>
