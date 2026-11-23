@@ -12,13 +12,16 @@ const transporter = nodemailer.createTransport({
 
 exports.sendOrderCancellationEmail = async (recipientEmail, newOrder) => {
   try {
+      if (!process.env.GMAIL_USER || !process.env.APP_PASSWORD) {
+        throw new Error("GMAIL_USER and APP_PASSWORD must be configured");
+      }
       console.log("order details ",newOrder);
       // Convert Mongoose document to plain object
       const orderObj = newOrder.toObject ? newOrder.toObject() : newOrder;
       
     const info = await transporter.sendMail({
     
-      from: '"Fasal Bazar" <team@example.com>',
+      from: `"Fasal Bazar" <${process.env.GMAIL_USER}>`,
       to: recipientEmail,
       subject: "Order Cancelation - Fasal Bazar",
       text: `Your order ${orderObj.orderId} has been calcelled successfully.`,
@@ -58,5 +61,6 @@ exports.sendOrderCancellationEmail = async (recipientEmail, newOrder) => {
     console.log("Message sent: %s", info.messageId);
   } catch (err) {
     console.error("Error while sending mail:", err);
+    throw err;
   }
 };

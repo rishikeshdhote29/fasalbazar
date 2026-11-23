@@ -6,6 +6,9 @@ dotenv.config();
 const baseUrl = process.env.BASE_URL ; // Default to localhost if BASE_URL is not set
 const sendEmail = async (to, resetToken) => {
   try {
+    if (!process.env.GMAIL_USER || !process.env.APP_PASSWORD) {
+      throw new Error("GMAIL_USER and APP_PASSWORD must be configured");
+    }
     // Create a transport object
     const transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -35,6 +38,7 @@ const sendEmail = async (to, resetToken) => {
     console.log("Email sent:", info.response);
   } catch (err) {
     console.error("Error sending email:", err);
+    throw err;
   }
 };
 module.exports = sendEmail;
