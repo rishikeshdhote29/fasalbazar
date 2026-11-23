@@ -18,13 +18,19 @@ const BASE_URL = import.meta.env.VITE_BASE_URL ;
         return;
       }
 
+      const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+      if (!razorpayKeyId) {
+        alert("Payment is not configured: Razorpay key ID is missing");
+        return;
+      }
+
       if (!orderDetails?.id && !orderDetails?.razorpayOrderId) {
         alert("Order ID not found");
         return;
       }
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: razorpayKeyId,
 
         amount: orderDetails.amount,
         currency: orderDetails.currency || "INR",
