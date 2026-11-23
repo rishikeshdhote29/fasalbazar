@@ -45,16 +45,10 @@ app.use("/api/order",orderRoutes);
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "ok",
-    service: "blogspire-backend",
+    service: "fasalbazar-backend",
 
     timestamp: new Date().toISOString(),
   });
-});
-
-const frontendDist = path.join(__dirname, "dist");
-app.use(express.static(frontendDist));
-app.get("/{*splat}", (req, res) => {
-  res.sendFile(path.join(frontendDist, "index.html"));
 });
 
 const port = Number(process.env.PORT) || 3000;

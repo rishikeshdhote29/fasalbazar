@@ -1,4 +1,4 @@
-name: Build and deploy FasalBazar to Azure App Service
+name: Build and deploy FasalBazar backend to Azure App Service
 
 on:
   push:
@@ -25,28 +25,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install and build frontend
-        working-directory: frontend
-        run: |
-          npm ci
-          npm run lint
-          npm run build
-
       - name: Install backend dependencies
         working-directory: backend
         run: npm ci --omit=dev
 
-      - name: Include frontend build in backend package
-        run: |
-          rm -rf backend/dist
-          mkdir -p backend/dist
-          cp -R frontend/dist/. backend/dist/
-
       - name: Package application
         run: |
           cd backend
-          zip -r "../${{ env.AZURE_WEBAPP_PACKAGE_PATH }}" . \\
-            -x '*.env'
+          zip -r "../${{ env.AZURE_WEBAPP_PACKAGE_PATH }}" . -x '*.env'
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
