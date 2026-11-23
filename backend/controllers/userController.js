@@ -5,13 +5,14 @@ const bcrypt= require("bcrypt");
 const jwt=require("jsonwebtoken");
 const User = require("../models/User");
 const sendEmail = require("../utils/passwordResetEmail");
+const { uploadSellerImage, deleteCloudinaryImage } = require("../utils/cloudinary");
 //@user register
 //@route POST /api/auth/register
 //@access public
 
 exports.register = asyncHandler( async (req, res, next) => {
 	
-	console.log("register function called.......")
+	
 	const {name,email,password}= req.body;
 	const user= await User.findOne({email});
 	if(user){
@@ -43,18 +44,22 @@ exports.loginUser=asyncHandler(async(req,res)=>{
 	
 	const user= await User.findOne({email});
 	if (!user){
-		throw new Error("invalid Creadtials");
+		const error = new Error("invalid credentials");
+		error.statusCode = 401;
+		throw error;
 
 	}
   const isMatch= await bcrypt.compare(password,user.password);
 	if (!isMatch){
-		throw new Error("invalid Creadtials");
+		const error = new Error("invalid credentials");
+		error.statusCode = 401;
+		throw error;
 
 	}
 	
 
 
-	const token=jwt.sign({id:user._id},process.env.JWT_SECRET,{ expiresIn: '10d' })
+	const token=jwt.sign({id:user._id,role:"user"},process.env.JWT_SECRET,{ expiresIn: '10d' })
 
 	res.status(200).json({
 		status:"success",
@@ -82,7 +87,9 @@ exports.userProfile=asyncHandler(async(req,res)=>{
 const id =req.userId;
 const user= await User.findOne({_id:id}).select("-password");
 if(!user) {
-	throw new Error("user not found");
+	const error = new Error("user not found");
+	error.statusCode = 404;
+	throw error;
 	
 }
 
@@ -112,8 +119,9 @@ const updateUser= req.body;
 	throw new Error("user not found");
 
   }
-  if (req.file && req.file.path) {
-	updateUser.avatar = req.file.path;
+  if (req.file?.buffer) {
+    await deleteCloudinaryImage(user.avatar);
+    updateUser.avatar = await uploadSellerImage(req.file);
   }
   const newUser= await User.findByIdAndUpdate(id,updateUser	,{returnDocument:"after"});
   res.status(200).json({

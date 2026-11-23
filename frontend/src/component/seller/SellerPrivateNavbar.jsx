@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {useDispatch, useSelector} from 'react-redux'
-import {logoutAction} from "../../redux/userSlice.js";
+import {sellerLogoutAction} from "../../redux/sellerSlice.js";
 const PrivateNavbar = () => {
 
 
@@ -9,7 +9,7 @@ const PrivateNavbar = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const {user,loggedinUser}= useSelector(state => state.Users)
+  const {seller,loggedinSeller}= useSelector(state => state.Sellers)
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "My Orders", href: "/seller-orders" },
@@ -72,7 +72,7 @@ const PrivateNavbar = () => {
                     }}
                     aria-label="Toggle profile menu"
                     >
-                      <img className=" w-10 rounded-full " src={loggedinUser.avatar} alt="User avatar"/>
+                      <img className=" w-10 rounded-full " src={loggedinSeller?.avatar} alt="Seller avatar"/>
                       
                       </button>
                
@@ -86,7 +86,7 @@ const PrivateNavbar = () => {
                 My Profile
               </a>
             
-              <button onClick={()=> dispatch(logoutAction())} className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10">
+              <button onClick={()=> dispatch(sellerLogoutAction())} className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10">
                 Logout
               </button>
             </div>

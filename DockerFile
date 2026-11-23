@@ -1,0 +1,2 @@
+FORM node:22-apline
+WORKDIR /app

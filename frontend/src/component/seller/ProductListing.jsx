@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {listProductAction} from "../../redux/productSlice.js";
+import {listProductAction} from "../../redux/sellerProductSlice.js";
 import Success from "../utils/Success.jsx";
 import ErrorMsg from "../utils/ErrorMsg.jsx";
 
@@ -8,7 +8,7 @@ const ProductListing = () => {
 	const fileInputRef = useRef(null);
 	const [imagePrev,setImagePrev] = useState(null);
 	const [image,setImage]= useState(null);
-	const {success,error}=useSelector(state=>state.Products);
+	const {success,error,loading}=useSelector(state=>state.SellerProducts);
 	const [productDetails, setProductDetails] = React.useState({
 		name:"",
 		price:"",
@@ -42,12 +42,11 @@ const ProductListing = () => {
 	
 	function handleSubmit(e) {
 		e.preventDefault();
-		
-			dispatch(listProductAction({ formData: productDetails, avatar: image }));
-		
-	
-	
-	
+		dispatch(listProductAction({ formData: productDetails, avatar: image }))
+			.unwrap()
+			.catch((message) => {
+				console.error(message);
+			});
 	}
 	
 	return (
@@ -66,7 +65,7 @@ const ProductListing = () => {
 					<label htmlFor="name">Product Name: </label>
 					<input id={'name'} name={'name'} value={productDetails.name} onChange={handleChange} className={"w-full" +
 						" border" +
-						" rounded-lg mb-2 "} placeholder={"product name"} type="text"/>
+						" rounded-lg mb-2 "} placeholder={"product name"} type="text" required/>
 					
 					
 					<label htmlFor="description">Product description: </label>
@@ -76,17 +75,17 @@ const ProductListing = () => {
 					<label htmlFor="price">Product price </label>
 					<input id={'price'} required name={'price'} value={productDetails.price} onChange={handleChange} className={"w-full" +
 						" border" +
-						" rounded-lg mb-2 "} placeholder={"product price"} type="text"/>
+						" rounded-lg mb-2 "} placeholder={"product price"} type="number" min="0.01" step="0.01"/>
 					<label htmlFor="quantity">Product quantity </label>
 					<input id={'quantity'} required name={'quantity'} value={productDetails.quantity} onChange={handleChange} className={"w-full" +
 						" border" +
-						" rounded-lg mb-2 "} placeholder={"product quantity"} type="text"/>
+						" rounded-lg mb-2 "} placeholder={"product quantity"} type="number" min="1" step="1"/>
 					
 					
 					<label htmlFor="name">Product discount: </label>
 					<input id={'discount'} required name={'discount'} value={productDetails.discount} onChange={handleChange} className={"w-full" +
 						" border" +
-						" rounded-lg mb-2 "} placeholder={"product discount"} type="text"/>
+						" rounded-lg mb-2 "} placeholder={"product discount"} type="number" min="0" step="0.01"/>
 					<label htmlFor="name">Product Unit: </label>
 					<select name="unit" className={"w-full border rounded-lg mb-2 "} onChange={handleChange} value={productDetails.unit} id="unit">
 						< option value="kg">Kg</option>
@@ -110,7 +109,7 @@ const ProductListing = () => {
 						<img src={imagePrev}  className={"h-60 border w-60"} alt="img prev"/>
 					</div>
 					
-					<button  className={"bg-yellow-400 rounded-lg p-2 mt-5 w-full"}>List product </button>
+					<button  className={"bg-yellow-400 rounded-lg p-2 mt-5 w-full"}>{loading?<p>listting....</p>:<p> List product   </p>} </button>
 					
 				</form>
 			

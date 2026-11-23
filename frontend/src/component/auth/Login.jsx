@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import{ useDispatch, useSelector} from 'react-redux'
-import {loginAction, sellerLoginAction} from '../../redux/userSlice.js';
+import {loginAction} from '../../redux/userSlice.js';
+import {sellerLoginAction} from '../../redux/sellerSlice.js';
 import Success from "../utils/Success.jsx"
 import ErrorMsg from "../utils/ErrorMsg.jsx";
 import {useNavigate} from "react-router";
@@ -13,7 +14,10 @@ const [formData,setFormData]= useState({
 	password:"",
 })
 const [userType,setUser]=useState("");
-const {loading,success,error,isLoggedIn}= useSelector(state => state.Users)
+const userAuth = useSelector(state => state.Users);
+const sellerAuth = useSelector(state => state.Sellers);
+const auth = userType === "seller" ? sellerAuth : userAuth;
+const {loading,success,error,isLoggedIn}= auth;
 
 
 
@@ -40,10 +44,10 @@ const 	 handleSubmit=(e)=>{
 	}
 
 	 useEffect(() => {
-		  if (isLoggedIn) {
+		  if (userAuth.isLoggedIn || sellerAuth.isLoggedIn) {
       navigate("/");
     }
-		  }, [isLoggedIn, navigate]);
+		  }, [userAuth.isLoggedIn, sellerAuth.isLoggedIn, navigate]);
 
 
 	return (

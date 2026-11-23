@@ -3,22 +3,70 @@ const Seller = require("../models/Seller");
 const redis= require("redis");
 const Product = require("../models/Product");
 const {redisClient} = require("../config/redis");
+const cloudinary = require("cloudinary").v2;
+
+const uploadProductImage = (file) => new Promise((resolve) => {
+  if (!file?.buffer) {
+    resolve(null);
+    return;
+  }
+
+  const timeout = setTimeout(() => resolve(null), 15000);
+  const stream = cloudinary.uploader.upload_stream(
+    {
+      folder: "FasalBazar",
+      allowed_formats: ["jpg", "png", "jpeg", "gif", "webp"],
+      transformation: [{ width: 500, height: 500, crop: "limit" }]
+    },
+    (error, result) => {
+      clearTimeout(timeout);
+      resolve(error ? null : result.secure_url);
+    }
+  );
+  stream.end(file.buffer);
+});
 
 exports.createProduct = asyncHandler(async (req, res) => {
-  
-    const product = req.body;
+    console.log(req.body);
+    const product = { ...req.body };
+    product.price = Number(product.price);
+    product.discount = product.discount === "" ? 0 : Number(product.discount);
+    product.quantity = Number(product.quantity);
     product.seller = req.userId;
+
+    if (!product.name || !product.description) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Product name and description are required"
+        });
+    }
+
+    if (!Number.isFinite(product.price) || product.price <= 0) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Product price must be greater than 0"
+        });
+    }
+
+    if (!Number.isFinite(product.discount) || product.discount < 0) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Product discount must be 0 or greater"
+        });
+    }
     
-    // ✅ STOCK VALIDATION: Ensure valid quantity
-    if (!product.quantity || product.quantity <= 0) {
+    if (!Number.isFinite(product.quantity) || product.quantity <= 0) {
         return res.status(400).json({
             status: "fail",
             message: "Product quantity must be greater than 0"
         });
     }
 
-    if (req.file && req.file.path) {
-        product.images = req.file.path;
+    if (req.file) {
+        const uploadedUrl = await uploadProductImage(req.file);
+        if (uploadedUrl) {
+            product.images = uploadedUrl;
+        }
     }
 
     const user = await Seller.findById(req.userId);
@@ -93,8 +141,11 @@ if(product){
     if(!product){
         throw new Error("you are the not authorize to update to this product");
     }
-    if(req.file&&req.file.path){
-        updateData.images=req.file.path
+    if(req.file){
+        const uploadedUrl = await uploadProductImage(req.file);
+        if (uploadedUrl) {
+            updateData.images=uploadedUrl;
+        }
     }
    const updated = await Product.findByIdAndUpdate(productId,updateData,{returnDocument:"after"})
    
@@ -116,9 +167,19 @@ if(product){
     redisClient.del(productId);
 }
 const sellerId= req.userId;
- product= await Product.findOne({_id:productId});
-if (sellerId !== product?.seller?._id?.toString()) {
-    throw new Error("you can only delete you product")
+ product= await Product.findById(productId);
+if (!product) {
+    return res.status(404).json({
+        status: "fail",
+        message: "Product not found"
+    });
+}
+const ownerId = product.seller?.toString();
+if (!ownerId || sellerId !== ownerId) {
+    return res.status(403).json({
+        status: "fail",
+        message: "you can only delete your product"
+    });
 }
 
 // seller.products.filter(product=>product.toString()===productId.toString())
@@ -141,12 +202,18 @@ res.status(201).json({
 // access private
 
 exports.sellerListing= asyncHandler(async (req,res)=>{
-    
-    const seller= await Seller.findById(req.userId).populate("products").sort({createdAt:-1});
+    const seller = await Seller.findById(req.userId);
+    if (!seller) {
+        throw new Error("Seller not found");
+    }
+
+    const listings = await Product.find({ seller: req.userId })
+        .sort({ createdAt: -1 });
+
     res.status(200).json({
         status:"success",
         message:"seller listing",
-        listings:seller.products
+        listings
     })
     
     

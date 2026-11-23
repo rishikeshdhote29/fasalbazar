@@ -5,8 +5,10 @@ const {isSellerLoggedin} = require("../middleware/isSellerLoggedin");
 const {createProduct, getAllProducts, deleteProduct, sellerListing, updateProduct, productDetails, searchProducts} = require("../controllers/productController");
 const multer= require("multer")
 
-const storage= require("../utils/cloudinary");
-const parser= multer({storage});
+const parser = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
 Router.post("/create",isSellerLoggedin,parser.single('image'),createProduct);
 Router.put("/update/:id",isSellerLoggedin,parser.single('image'),updateProduct);
 Router.get("/getAllProducts",getAllProducts);

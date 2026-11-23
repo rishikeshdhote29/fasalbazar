@@ -5,8 +5,10 @@ const {register,  updateProfile, sellerProfile, loginSeller, forgetPassword, res
 const {isSellerLoggedin} = require("../middleware/isSellerLoggedin");
 const multer= require("multer")
 
-const storage= require("../utils/cloudinary");
-const parser= multer({storage});
+const parser = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
 Router.post("/register",register);
 Router.post("/login",loginSeller);
 Router.get("/profile",isSellerLoggedin,sellerProfile)

@@ -1,6 +1,8 @@
 const Router= require("express").Router();
 const {isLoggedin} = require("../middleware/isLoggedin");
-const {createOrder, getOrderDetails, getOrderDetailsByTrackingId, getAllOrders, getAllSellerOrders, cancelOrder} = require("../controllers/orderController");
+const {createOrder, getOrderDetails, getOrderDetailsByTrackingId, getAllOrders, getAllSellerOrders, cancelOrder,
+	verifyPayment
+} = require("../controllers/orderController");
 const {isSellerLoggedin} = require("../middleware/isSellerLoggedin");
 
 //pace order
@@ -17,7 +19,8 @@ Router.get("/get-seller-orders-list",isSellerLoggedin,getAllSellerOrders)
 Router.get("/get-seller-details/:id", isSellerLoggedin, require("../controllers/orderController").getSellerOrderDetails)
 //cancel order
 Router.put("/cancel-order/:id",isLoggedin,cancelOrder);
-
+//verify payment
+Router.post("/verify",isLoggedin,verifyPayment);
 // seller updates order status
 Router.put("/update-order-status/:id", isSellerLoggedin, require("../controllers/orderController").updateOrderStatusBySeller);
 

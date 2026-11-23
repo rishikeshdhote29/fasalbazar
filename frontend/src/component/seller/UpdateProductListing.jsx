@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {fetchProductDetailsAction, listProductAction, updateProductListingAction} from "../../redux/productSlice.js";
+import {fetchSellerProductDetailsAction, updateProductListingAction} from "../../redux/sellerProductSlice.js";
 import Success from "../utils/Success.jsx";
 import ErrorMsg from "../utils/ErrorMsg.jsx";
 import {useParams} from "react-router";
@@ -10,12 +10,12 @@ const UpdateProductListing = () => {
 	const dispatch = useDispatch();
 
 	useEffect(()=>{
-		dispatch(fetchProductDetailsAction({id:productId}));
+		dispatch(fetchSellerProductDetailsAction({id:productId}));
 	},[dispatch])
 	
 	const fileInputRef = useRef(null);
 	const [image,setImage]= useState(null);
-	const {success,error,product}=useSelector(state=>state.Products);
+	const {success,error,product}=useSelector(state=>state.SellerProducts);
 	const [imagePrev,setImagePrev] = useState(product.images);
 	console.log("product" ,product.name);
 	const [productDetails, setProductDetails] = useState({

@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import axios from 'axios';
-import {fetchSellerOrdersAction} from "../../redux/orderSlice.js";
+import {fetchSellerOrdersAction} from "../../redux/sellerOrderSlice.js";
 import {useNavigate} from "react-router";
 
 
 const MyOrder = () => {
-	const orders= useSelector(state=> state?.Orders?.orders || [])
+	const orders= useSelector(state=> state?.SellerOrders?.orders || [])
 	const dispatch= useDispatch();
-	const loggedinUser = useSelector(state => state.Users?.loggedinUser);
+	const loggedinUser = useSelector(state => state.Sellers?.loggedinSeller);
 	const token = loggedinUser?.token;
 	const [statusMap, setStatusMap] = useState({});
 const navigate = useNavigate();

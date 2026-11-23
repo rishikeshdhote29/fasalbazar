@@ -171,9 +171,15 @@ exports.getCart= asyncHandler(async(req,res)=>{
 	 const user=await User.findById(userId);
 	 const cart= await Cart.findById(user.cart).populate({path: "products.product",
 	 })
-	console.log(cart)
 	if(!cart)
 		throw new Error("cart not found");
+
+	const availableItems = cart.products.filter((item) => item.product);
+	if (availableItems.length !== cart.products.length) {
+		cart.products = availableItems;
+		await cart.save();
+	}
+
 	res.status(200).json({
 		status:"success",
 		message:"cart fetched successfuly",

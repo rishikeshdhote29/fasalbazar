@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import {forgetPasswordAction, forgetSellerPasswordAction} from "../../redux/userSlice.js";
+import {forgetPasswordAction} from "../../redux/userSlice.js";
+import {forgetSellerPasswordAction} from "../../redux/sellerSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router";
 import success from "../utils/Success.jsx";
@@ -11,7 +12,10 @@ const ForgetPassword = () => {
   const navigate= useNavigate();
 const dispach= useDispatch();
 const [userType,setUserType]= useState("")
-const {success,error}= useSelector(state => state.Users)
+const userAuth = useSelector(state => state.Users);
+const sellerAuth = useSelector(state => state.Sellers);
+const auth = userType === "seller" ? sellerAuth : userAuth;
+const {success,error}= auth;
   function handleSubmit(e) {
     e.preventDefault();
     console.log("Email submitted:", email);
