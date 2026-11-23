@@ -7,18 +7,24 @@ const userRoutes= require("./routes/userRoutes");
 const productRoutes= require("./routes/productRoutes");
 const cartRoutes= require("./routes/cartRoutes");
 const sellerRoutes= require("./routes/sellerRoutes");
-
+const  rateLimit = require("express-rate-limit")
+const chalk = require("chalk").default;
 const orderRoutes= require("./routes/orderRoutes");
 
-const connectDB= require("./database");
+const connectDB= require("./config/database");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
 const cors = require("cors");
+const {connectRedis} = require("./config/redis");
 app.use(cors({
     origin: "*",
      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
      allowedHeaders: ["Content-Type", "Authorization"],
 }));
-
+let limiter= rateLimit({ max:1000,
+windowMs:60*60*1000,
+    message:"we have received too many requests form this IP, please try  again later"
+})
+app.use('/api/auth',limiter)
 
 cloudinary.config({
     secure: true
@@ -45,10 +51,19 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-const port = process.env.PORT || 3030;
+const port=3000;
 
 
-   connectDB()
-    app.listen(port,()=>{
-      console.log("server is running on port "+port);})
+const startServer = async () => {
+  await connectDB();
+    await connectRedis();
+  app.listen(port, () => {
+    console.log(chalk.green.bold("server is running on port " + port));
+
+  });
+};
+
+startServer().catch(() => {
+  process.exitCode = 1;
+});
    

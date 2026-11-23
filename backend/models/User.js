@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const { userProfile } = require('../controllers/userController');
-const sellerSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
 	
 	name: {
 		type: String, required: true,
@@ -40,7 +41,10 @@ const sellerSchema = new mongoose.Schema({
 							ref:"Order",
 			default:null
 		}
-	]
+	],passwordResetToken:{
+            type: String,
+}    ,
+passwordResetExprires:{type:Date},
 	
 },{
 	timestamps:true,
@@ -51,6 +55,18 @@ const sellerSchema = new mongoose.Schema({
         virtual: true,
         }
 })
-
-const User= mongoose.model("User",sellerSchema);
+userSchema.methods.generatePasswordResetToken=function(){
+    //generate token
+    const resetToken= crypto.randomBytes(20).toString("hex");
+    
+    this.passwordResetToken=crypto.createHash('sha256').update(resetToken).digest('hex');
+    
+    //set the expiry time to 10 min
+    this.passwordResetExprires=Date.now()+10*60*1000;
+    
+    return resetToken;
+    
+    
+}
+const User= mongoose.model("User",userSchema);
 module.exports=User;

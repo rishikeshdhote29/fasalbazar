@@ -19,7 +19,12 @@ const productSchema = new mongoose.Schema({
 	type:mongoose.Schema.Types.ObjectId,
 		ref:"Category"
 		
-},isAvailable:{
+},
+	isInactive:{
+		type:Boolean,
+		default: false
+	}
+	,isAvailable:{
 		type:Boolean,
 		default:true
 	},
@@ -29,9 +34,12 @@ const productSchema = new mongoose.Schema({
 	}
 	,seller:{
 		type:mongoose.Schema.Types.ObjectId,
-		ref:"User"
+		ref:"Seller"
 	}
+	 ,unit: {
+		type: String,
 	
+	}
 },{
 	timestamps:true,
 	 toJSON:{

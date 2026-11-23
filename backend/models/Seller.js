@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require("crypto");
 const sellerSchema = new mongoose.Schema({
 	
 	name: {
@@ -26,12 +27,19 @@ const sellerSchema = new mongoose.Schema({
 
 	},products:[{
 		type:mongoose.Schema.Types.ObjectId,
-		ref:"Product"
-	}],
+		ref:"Product",
+		default :[]
+	}]
+	,
 	orders:[{
 		type:mongoose.Schema.Types.ObjectId,
 		ref:"Order"
-	}]
+	}],passwordResetToken:{
+            type: String,
+}    ,
+
+passwordResetExprires:{
+		type:Date},
 	
 	
 },{
@@ -43,6 +51,16 @@ const sellerSchema = new mongoose.Schema({
         virtual: true,
         }
 })
-
+sellerSchema.methods.generatePasswordResetToken=function() {
+	//generate token
+	const resetToken = crypto.randomBytes(20).toString("hex");
+	
+	this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+	
+	//set the expiry time to 10 min
+	this.passwordResetExprires = Date.now() + 10 * 60 * 1000;
+	
+	return resetToken;
+}
 const Seller= mongoose.model("Seller",sellerSchema);
 module.exports=Seller;

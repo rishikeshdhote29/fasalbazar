@@ -1,4 +1,4 @@
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinaryStorage = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
@@ -11,7 +11,7 @@ cloudinary.config({
 
 // Default storage used across the app.
 // If field name is "coverImage", use wider transformation.
-const storage = new CloudinaryStorage({
+const storage = new cloudinaryStorage({
     cloudinary,
     params: async (req, file) => ({
         folder: "FasalBazar",
